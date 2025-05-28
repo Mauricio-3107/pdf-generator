@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const chromium = require("chrome-aws-lambda");
+const puppeteer = require("puppeteer");
 const path = require("path");
 const fs = require("fs");
 const handlebars = require("handlebars");
@@ -40,10 +40,9 @@ app.post("/generate", async (req, res) => {
       stampURI: toBase64("sello.png"),
     });
 
-    const browser = await chromium.puppeteer.launch({
-      args: chromium.args,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const page = await browser.newPage();
