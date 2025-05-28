@@ -43,7 +43,11 @@ app.post("/generate", async (req, res) => {
       stampURI: toBase64("sello.png"),
     });
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: "new",
+      executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
     await page.setContent(html);
     const pdfBuffer = await page.pdf({ format: "A4" });
