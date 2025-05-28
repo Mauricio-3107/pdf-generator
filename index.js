@@ -41,7 +41,7 @@ app.post("/generate", async (req, res) => {
     });
 
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
