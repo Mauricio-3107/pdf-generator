@@ -4,6 +4,7 @@ const puppeteer = require("puppeteer");
 const path = require("path");
 const fs = require("fs");
 const handlebars = require("handlebars");
+require("dotenv").config();
 
 const app = express();
 app.use(bodyParser.json());
@@ -43,7 +44,19 @@ app.post("/generate", async (req, res) => {
       stampURI: toBase64("sello.png"),
     });
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      args: [
+        "--disable-setuid-sandbox",
+        "--no-sandbox",
+        "--single-process",
+        "--no-zygote",
+      ],
+      executablePath:
+        process.env.NODE_ENV === "production"
+          ? process.env.PUPPETEER_EXECUTABLE_PATH
+          : puppeteer.executablePath(),
+    });
+
     const page = await browser.newPage();
     await page.setContent(html);
     const pdfBuffer = await page.pdf({ format: "A4" });
