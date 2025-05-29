@@ -19,7 +19,10 @@ app.post("/generate", async (req, res) => {
       signatory,
     } = req.body;
 
+    // Load HTML template
     const htmlTemplate = fs.readFileSync("template.html", "utf8");
+
+    // Compile with Handlebars
     const template = handlebars.compile(htmlTemplate);
 
     const toBase64 = (rel) => {
@@ -40,13 +43,9 @@ app.post("/generate", async (req, res) => {
       stampURI: toBase64("sello.png"),
     });
 
-    const browser = await puppeteer.launch({
-      headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    });
-
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: "domcontentloaded" });
+    await page.setContent(html);
     const pdfBuffer = await page.pdf({ format: "A4" });
     await browser.close();
 
@@ -61,7 +60,7 @@ app.post("/generate", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`✅ Server is running at http://localhost:${PORT}`);
 });
