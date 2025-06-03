@@ -21,6 +21,11 @@ app.post("/generate", async (req, res) => {
   }
 });
 
+// Health check para UptimeRobot o cualquier ping
+app.get("/", (req, res) => {
+  res.send("✅ PDF Generator está activo.");
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Server is running at http://localhost:${PORT}`);
